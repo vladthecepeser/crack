@@ -25,7 +25,6 @@ Servo escL;
 int escPinR = 22; 
 int escPinL = 23; 
 bool wasConnected = false;
-bool bleStarted = false;
 int nothing = 0;
 
 
@@ -91,13 +90,14 @@ void loop() {
     BP32.update();
 
     if (myGamepad && myGamepad->isConnected()) {
-        Serial.println("Xbox controller connected");
-
+        if(!wasConnected){
+            Serial.println("Xbox controller connected");
+            wasConnected = true;
+        }
         
+
         int rx = myGamepad->axisRX();
         int ry = myGamepad->axisRY();
-
-
 
         int rStickX = static_cast<double>(rx)*(100/512);
         int rStickY = -static_cast<double>(rx)*(100/512);
@@ -131,9 +131,10 @@ void loop() {
             escR.writeMicroseconds(1500);
             escL.writeMicroseconds(1500);
         }
-
-        Serial.println("Waiting for Xbox controller...");
-        delay(250);
+        else{
+            Serial.println("Waiting for Xbox controller...");
+            delay(250);
+        }
     }
 
     delay(5);
